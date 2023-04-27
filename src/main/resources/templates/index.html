@@ -1,16 +1,159 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>List of Objects</title>
-    <link rel="stylesheet" type="text/css" href="indexStyle.css">
+    <title>Editable Table</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <body>
 <div class="container">
-    <a href="/create" class="create-link">Create New License</a>
-    <div class="list-container" id="list-container">
-    <!-- The list of objects will be generated dynamically using JavaScript -->
+    <h2>Drivers</h2>
+    <button class="btn btn-success" id="addDriverBtn">Add New Driver</button>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Full Name</th>
+            <th>Birthdate</th>
+            <th>Birthplace</th>
+            <th>Issue Date</th>
+            <th>Expiration Date</th>
+            <th>Issued By</th>
+            <th>Code</th>
+            <th>Residence</th>
+            <th>Categories</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody id="driverTableBody">
+        </tbody>
+    </table>
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit Record</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm">
+                        <div class="form-group">
+                            <label for="id">ID:</label>
+                            <input type="text" class="form-control" id="id" name="id" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="fullname">Full Name:</label>
+                            <input type="text" class="form-control" id="fullname" name="fullname">
+                        </div>
+                        <div class="form-group">
+                            <label for="birthdate">Birthdate:</label>
+                            <input type="date" class="form-control" id="birthdate" name="birthdate">
+                        </div>
+                        <div class="form-group">
+                            <label for="birthplace">Birthplace:</label>
+                            <input type="text" class="form-control" id="birthplace" name="birthplace">
+                        </div>
+                        <div class="form-group">
+                            <label for="issueDate">Issue Date:</label>
+                            <input type="date" class="form-control" id="issueDate" name="issueDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="expirationDate">Expiration Date:</label>
+                            <input type="date" class="form-control" id="expirationDate" name="expirationDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="issuedBy">Issued By:</label>
+                            <input type="text" class="form-control" id="issuedBy" name="issuedBy">
+                        </div>
+                        <div class="form-group">
+                            <label for="code">Code:</label>
+                            <input type="text" class="form-control" id="code" name="code">
+                        </div>
+                        <div class="form-group">
+                            <label for="residence">Residence:</label>
+                            <input type="text" class="form-control" id="residence" name="residence">
+                        </div>
+                        <div class="form-group">
+                            <label for="categories">Categories:</label>
+                            <input type="text" class="form-control" id="categories" name="categories">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary save-btn">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="driverModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="driverModalTitle">Add New Driver</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="driverForm">
+                        <div class="form-group">
+                            <label for="fullname">Full Name:</label>
+                            <input type="text" class="form-control" id="fullname2" name="fullname">
+                        </div>
+                        <div class="form-group">
+                            <label for="birthdate">Birthdate:</label>
+                            <input type="date" class="form-control" id="birthdate2" name="birthdate">
+                        </div>
+                        <div class="form-group">
+                            <label for="birthplace">Birthplace:</label>
+                            <input type="text" class="form-control" id="birthplace2" name="birthplace">
+                        </div>
+                        <div class="form-group">
+                            <label for="issueDate">Issue Date:</label>
+                            <input type="date" class="form-control" id="issueDate2" name="issueDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="expirationDate">Expiration Date:</label>
+                            <input type="date" class="form-control" id="expirationDate2" name="expirationDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="issuedBy">Issued By:</label>
+                            <input type="text" class="form-control" id="issuedBy2" name="issuedBy">
+                        </div>
+                        <div class="form-group">
+                            <label for="code">Code:</label>
+                            <input type="text" class="form-control" id="code2" name="code">
+                        </div>
+                        <div class="form-group">
+                            <label for="residence">Residence:</label>
+                            <input type="text" class="form-control" id="residence2" name="residence">
+                        </div>
+                        <div class="form-group">
+                            <label for="categories">Categories:</label>
+                            <input type="text" class="form-control" id="categories2" name="categories">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btnbtn−primary">Save changes</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

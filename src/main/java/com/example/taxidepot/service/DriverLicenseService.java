@@ -33,4 +33,8 @@ public class DriverLicenseService {
         DriverLicense driverLicense = driverLicenseRepo.get(id);
         return driverLicense;
     }
+
+    public void updateDriverLicense(DriverLicense driverLicense) {
+        driverLicenseRepo.update(driverLicense);
+    }
 }

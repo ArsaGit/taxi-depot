@@ -10,9 +10,4 @@ public class MainController {
     public String index(Model model) {
         return "index";
     }
-
-    @RequestMapping("/create")
-    public String create(Model model) {
-        return "create";
-    }
 }

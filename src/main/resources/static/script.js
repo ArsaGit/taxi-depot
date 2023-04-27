@@ -1,98 +1,158 @@
-let apiUrl = '/drivers';
-
-async function getLicenses() {
-    try {
-        let response = await fetch(apiUrl);
-        let data = await response.json();
-        return data;
-    } catch (error) {
-        console.log(error);
+function populateDriverTable(drivers) {
+    $('#driverTableBody').empty();
+    for (var i = 0; i < drivers.length; i++) {
+        addDriverRow(drivers[i]);
     }
-}
 
+    // Edit button click handler
+    $('.edit-btn').click(function() {
+        var driver = $(this).data('driver');
+        $('#id').val(driver._id);
+        $('#rev').val(driver._rev);
+        $('#fullname').val(driver.fullName);
+        $('#birthdate').val(driver.birthdate);
+        $('#birthplace').val(driver.birthplace);
+        $('#issueDate').val(driver.issueDate);
+        $('#expirationDate').val(driver.expirationDate);
+        $('#issuedBy').val(driver.issuedBy);
+        $('#code').val(driver.code);
+        $('#residence').val(driver.residence);
+        $('#categories').val(driver.categories);
+        $('#editModal').modal('show');
+    });
 
+    // Save changes button click handler
+    $('.save-btn').click(async function() {
+        var driver = {
+            _id: $('#id').val(),
+            _rev: $('#rev').val(),
+            fullName: $('#fullname').val(),
+            birthdate: $('#birthdate').val(),
+            birthplace: $('#birthplace').val(),
+            issueDate: $('#issueDate').val(),
+            expirationDate: $('#expirationDate').val(),
+            issuedBy: $('#issuedBy').val(),
+            code: $('#code').val(),
+            residence: $('#residence').val(),
+            categories: $('#categories').val()
+        };
 
-// Assuming you have an array of objects called "list"
+        let response = await fetch('/drivers/' + $('#id').val(), {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(driver)
+            }
+        );
 
+        getLicenses().then(data => {
+            populateDriverTable(data);
+        });
+    });
 
-async function displayList(list) {
-//    const list = [
-//      {
-//        fullName: "John Doe",
-//        birthdate: "01/01/1980",
-//        birthplace: "New York, NY",
-//        issueDate: "01/01/2020",
-//        expirationDate: "01/01/2030",
-//        issuedBy: "Department of Motor Vehicles",
-//        code: "ABC123",
-//        residence: "123 Main St, Anytown USA",
-//        categories: "A, B, C"
-//      },
-//      {
-//        fullName: "Jane Smith",
-//        birthdate: "02/02/1990",
-//        birthplace: "Los Angeles, CA",
-//        issueDate: "02/02/2020",
-//        expirationDate: "02/02/2030",
-//        issuedBy: "Department of Transportation",
-//        code: "XYZ456",
-//        residence: "456 Elm St, Anytown USA",
-//        categories: "B, C"
-//      }
-//    ];
+    // Delete button click handler
+    $('.delete-btn').click(async function() {
+        var id = $(this).data('id');
 
+//        if (confirm('Are you sure you want to delete this record?')) {
+        let response = await fetch('/drivers/' + id, { method: 'DELETE' });
+//        }
 
-    const container = document.getElementById("list-container");
+        getLicenses().then(data => {
+          populateDriverTable(data);
+        });
+    });
 
-    // Loop through each object and create a list item
-    list.forEach(obj => {
-        const listItem = document.createElement("div");
-        listItem.classList.add("list-item");
+    // Add new driver button click handler
+    $('#addDriverBtn').click(function() {
+        clearDriverForm();
+        $('#driverModal').modal('show');
+    });
 
-        const fullName = document.createElement("h2");
-        fullName.innerText = obj.fullName;
+    // Submit new driver form handler
+    $('.btnbtn−primary').click(async function() {
+//        event.preventDefault();
+        var driver = {
+            fullName: $('#fullname2').val(),
+            birthdate: $('#birthdate2').val(),
+            birthplace: $('#birthplace2').val(),
+            issueDate: $('#issueDate2').val(),
+            expirationDate: $('#expirationDate2').val(),
+            issuedBy: $('#issuedBy2').val(),
+            code: $('#code2').val(),
+            residence: $('#residence2').val(),
+            categories: $('#categories2').val()
+        };
 
-        const birthdate = document.createElement("p");
-        birthdate.innerHTML = `<strong>Birthdate:</strong> ${obj.birthdate}`;
+        let response = await fetch('/drivers', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(driver)
+            }
+        );
 
-        const birthplace = document.createElement("p");
-        birthplace.innerHTML = `<strong>Birthplace:</strong> ${obj.birthplace}`;
-
-        const issueDate = document.createElement("p");
-        issueDate.innerHTML = `<strong>Issue Date:</strong> ${obj.issueDate}`;
-
-        const expirationDate = document.createElement("p");
-        expirationDate.innerHTML = `<strong>Expiration Date:</strong> ${obj.expirationDate}`;
-
-        const issuedBy = document.createElement("p");
-        issuedBy.innerHTML = `<strong>Issued By:</strong> ${obj.issuedBy}`;
-
-        const code = document.createElement("p");
-        code.innerHTML = `<strong>Code:</strong> ${obj.code}`;
-
-        const residence = document.createElement("p");
-        residence.innerHTML = `<strong>Residence:</strong> ${obj.residence}`;
-
-        const categories = document.createElement("p");
-        categories.classList.add("categories");
-        categories.innerHTML = `<strong>Categories:</strong> ${obj.categories}`;
-
-        listItem.appendChild(fullName);
-        listItem.appendChild(birthdate);
-        listItem.appendChild(birthplace);
-        listItem.appendChild(issueDate);
-        listItem.appendChild(expirationDate);
-        listItem.appendChild(issuedBy);
-        listItem.appendChild(code);
-        listItem.appendChild(residence);
-        listItem.appendChild(categories);
-
-        container.appendChild(listItem);
+        clearDriverForm();
+//        $('#driverModal').modal('hide');
+        getLicenses().then(data => {
+          populateDriverTable(data);
+        });
     });
 }
 
+async function getLicenses() {
+  try {
+    let response = await fetch('/drivers');
+    let data = await response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function formatDate(date) {
+    const dt = Date.parse(date);
+    return new Intl.DateTimeFormat('ru-RU').format(dt);
+}
+
+//add modal form
+
+function clearDriverForm() {
+    $('#fullname').val('');
+    $('#birthdate').val('');
+    $('#birthplace').val('');
+    $('#issueDate').val('');
+    $('#expirationDate').val('');
+    $('#issuedBy').val('');
+    $('#code').val('');
+    $('#residence').val('');
+    $('#categories').val('');
+}
+
+function addDriverRow(driver) {
+    var row = $('<tr>');
+    row.append($('<td>').text(driver._id));
+    row.append($('<td>').text(driver.fullName));
+    row.append($('<td>').text(formatDate(driver.birthdate)));
+    row.append($('<td>').text(driver.birthplace));
+    row.append($('<td>').text(formatDate(driver.issueDate)));
+    row.append($('<td>').text(formatDate(driver.expirationDate)));
+    row.append($('<td>').text(driver.issuedBy));
+    row.append($('<td>').text(driver.code));
+    row.append($('<td>').text(driver.residence));
+    row.append($('<td>').text(driver.categories));
+    var btnGroup = $('<div class="btn-group">');
+    btnGroup.append($('<button class="btn btn-primary edit-btn">Edit</button>').data('driver', driver));
+    btnGroup.append($('<button class="btn btn-danger delete-btn">Delete</button>').data('id', driver._id));
+    row.append($('<td>').append(btnGroup));
+    $('#driverTableBody').append(row);
+}
 
 
 getLicenses().then(data => {
-  displayList(data);
+  populateDriverTable(data);
 });
+
+
